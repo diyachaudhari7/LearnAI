@@ -1,0 +1,11 @@
+{
+  "name": "ai-learning-platform-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Full-Stack AI Learning Platform",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "preview": "npm --prefix frontend run preview"
+  }
+}
