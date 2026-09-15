@@ -55,29 +55,29 @@ const Sidebar = ({ isOpen, onClose }) => {
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-white dark:bg-darkCard border-r border-slate-200/80 dark:border-darkBorder flex flex-col justify-between transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-white dark:bg-[#090D16] border-r border-slate-200/80 dark:border-white/[0.08] flex flex-col justify-between transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Brand Logo & Close Button */}
         <div>
-          <div className="h-16 px-6 flex items-center justify-between border-b border-slate-100 dark:border-darkBorder">
-            <NavLink to="/dashboard" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-primary-600 via-secondary-600 to-cyanAccent-500 flex items-center justify-center shadow-md shadow-primary-500/25 group-hover:scale-105 transition-transform">
-                <Sparkles className="w-5 h-5 text-white" />
+          <div className="h-16 px-5 flex items-center justify-between border-b border-slate-100 dark:border-white/[0.06]">
+            <NavLink to="/dashboard" className="flex items-center gap-3 group">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-b from-primary-500 to-primary-700 flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_2px_8px_rgba(79,70,229,0.35)] border border-primary-400/40 group-hover:scale-105 transition-transform">
+                <Sparkles className="w-4 h-4 text-white" />
               </div>
-              <div>
-                <span className="text-lg font-extrabold tracking-tight bg-gradient-to-r from-primary-600 via-secondary-600 to-cyanAccent-500 bg-clip-text text-transparent font-heading">
-                  LearnAI
+              <div className="flex items-center gap-2">
+                <span className="text-base font-extrabold tracking-tight text-slate-900 dark:text-white font-sans">
+                  LEARN<span className="text-primary-500">.AI</span>
                 </span>
-                <span className="text-[9px] block uppercase font-bold tracking-widest text-slate-400 -mt-1">
-                  Adaptive Platform
+                <span className="font-mono text-[9px] font-bold px-1.5 py-0.5 rounded bg-primary-50 dark:bg-primary-950/80 text-primary-700 dark:text-primary-300 border border-primary-200/60 dark:border-primary-800/60">
+                  v2.4
                 </span>
               </div>
             </NavLink>
             <button
               onClick={onClose}
-              className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-darkCardHover"
+              className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.06]"
             >
               <X className="w-5 h-5" />
             </button>
@@ -86,8 +86,8 @@ const Sidebar = ({ isOpen, onClose }) => {
           {/* Navigation Links */}
           <div className="px-3 py-4 space-y-6 overflow-y-auto max-h-[calc(100vh-140px)]">
             <div>
-              <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
-                Main Menu
+              <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 font-mono">
+                Platform Engine
               </p>
               <nav className="space-y-1">
                 {navItems.map((item) => {
@@ -100,23 +100,23 @@ const Sidebar = ({ isOpen, onClose }) => {
                         if (window.innerWidth < 1024) onClose();
                       }}
                       className={({ isActive }) =>
-                        `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                        `flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-150 ${
                           isActive
-                            ? 'bg-primary-50 text-primary-700 dark:bg-primary-950/60 dark:text-primary-300 shadow-sm'
-                            : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/70 dark:hover:bg-darkCardHover hover:text-slate-900 dark:hover:text-slate-200'
+                            ? 'bg-primary-50/90 text-primary-700 dark:bg-white/[0.07] dark:text-white border border-primary-200/70 dark:border-white/10 shadow-sm'
+                            : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/70 dark:hover:bg-white/[0.04] hover:text-slate-900 dark:hover:text-slate-100'
                         }`
                       }
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2.5">
                         <Icon className="w-4 h-4 flex-shrink-0" />
                         <span>{item.label}</span>
                       </div>
                       {item.badge && (
                         <span
-                          className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                          className={`font-mono text-[9px] font-bold px-1.5 py-0.5 rounded ${
                             item.badge === 'AI'
                               ? 'bg-cyan-50 dark:bg-cyan-950/60 text-cyanAccent-600 dark:text-cyanAccent-400 border border-cyan-200/50 dark:border-cyan-800/50'
-                              : 'bg-primary-100 dark:bg-primary-900/60 text-primary-700 dark:text-primary-300'
+                              : 'bg-primary-100/80 dark:bg-primary-950/80 text-primary-700 dark:text-primary-300 border border-primary-200/50 dark:border-primary-800/50'
                           }`}
                         >
                           {item.badge}
@@ -129,8 +129,8 @@ const Sidebar = ({ isOpen, onClose }) => {
             </div>
 
             <div>
-              <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
-                Preferences
+              <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 font-mono">
+                Workspace
               </p>
               <nav className="space-y-1">
                 {secondaryNavItems.map((item) => {
@@ -143,10 +143,10 @@ const Sidebar = ({ isOpen, onClose }) => {
                         if (window.innerWidth < 1024) onClose();
                       }}
                       className={({ isActive }) =>
-                        `flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                        `flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-150 ${
                           isActive
-                            ? 'bg-primary-50 text-primary-700 dark:bg-primary-950/60 dark:text-primary-300 shadow-sm'
-                            : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/70 dark:hover:bg-darkCardHover hover:text-slate-900 dark:hover:text-slate-200'
+                            ? 'bg-primary-50/90 text-primary-700 dark:bg-white/[0.07] dark:text-white border border-primary-200/70 dark:border-white/10 shadow-sm'
+                            : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/70 dark:hover:bg-white/[0.04] hover:text-slate-900 dark:hover:text-slate-100'
                         }`
                       }
                     >
@@ -161,10 +161,10 @@ const Sidebar = ({ isOpen, onClose }) => {
         </div>
 
         {/* User Card & Logout Bottom */}
-        <div className="p-3 border-t border-slate-100 dark:border-darkBorder">
+        <div className="p-3 border-t border-slate-100 dark:border-white/[0.06]">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
+            className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-colors"
           >
             <div className="flex items-center gap-2.5">
               <LogOut className="w-4 h-4" />

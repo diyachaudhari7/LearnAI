@@ -36,21 +36,26 @@ const ForgotPasswordPage = () => {
       <div className="w-full max-w-md">
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2.5 mb-3 group">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-primary-600 via-secondary-600 to-cyanAccent-500 flex items-center justify-center shadow-lg shadow-primary-500/25">
-              <Sparkles className="w-5 h-5 text-white" />
+          <Link to="/" className="inline-flex items-center gap-3 mb-4 group">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-b from-primary-500 to-primary-700 flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_2px_8px_rgba(79,70,229,0.35)] border border-primary-400/40 group-hover:scale-105 transition-transform">
+              <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <span className="text-2xl font-black tracking-tight bg-gradient-to-r from-primary-600 via-secondary-600 to-cyanAccent-500 bg-clip-text text-transparent font-heading">
-              LearnAI
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white font-sans">
+                LEARN<span className="text-primary-500">.AI</span>
+              </span>
+              <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary-50 dark:bg-primary-950/80 text-primary-700 dark:text-primary-300 border border-primary-200/60 dark:border-primary-800/60">
+                v2.4
+              </span>
+            </div>
           </Link>
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white font-heading">Reset Password</h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            We will send a secure link to reset your account password
+            We will dispatch a secure recovery token to authenticate your identity
           </p>
         </div>
 
-        <Card className="p-6 sm:p-8 space-y-6" glass>
+        <Card className="p-6 sm:p-8 space-y-6 shadow-2xl dark:shadow-[0_20px_60px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)]" glass>
           {submitted ? (
             <div className="text-center space-y-4 py-4 animate-fade-in">
               <div className="w-14 h-14 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto">

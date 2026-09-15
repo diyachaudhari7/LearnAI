@@ -67,26 +67,31 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-darkBg flex items-center justify-center p-4 transition-colors">
+    <div className="min-h-screen bg-[#FAFCFF] dark:bg-[#090D16] bg-dot-pattern flex items-center justify-center p-4 transition-colors relative">
       <div className="w-full max-w-md my-8">
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2.5 mb-3 group">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-primary-600 via-secondary-600 to-cyanAccent-500 flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:scale-105 transition-transform">
-              <Sparkles className="w-5 h-5 text-white" />
+          <Link to="/" className="inline-flex items-center gap-3 mb-4 group">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-b from-primary-500 to-primary-700 flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_2px_8px_rgba(79,70,229,0.35)] border border-primary-400/40 group-hover:scale-105 transition-transform">
+              <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <span className="text-2xl font-black tracking-tight bg-gradient-to-r from-primary-600 via-secondary-600 to-cyanAccent-500 bg-clip-text text-transparent font-heading">
-              LearnAI
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white font-sans">
+                LEARN<span className="text-primary-500">.AI</span>
+              </span>
+              <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary-50 dark:bg-primary-950/80 text-primary-700 dark:text-primary-300 border border-primary-200/60 dark:border-primary-800/60">
+                v2.4
+              </span>
+            </div>
           </Link>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white font-heading">Create Account</h2>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white font-heading">Create Evaluation Account</h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Start identifying skill gaps and mastering your learning material
+            Deploy adaptive AI diagnostic models across your learning material
           </p>
         </div>
 
         {/* Signup Card */}
-        <Card className="p-6 sm:p-8 space-y-6" glass>
+        <Card className="p-6 sm:p-8 space-y-6 shadow-2xl dark:shadow-[0_20px_60px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)]" glass>
           {error && (
             <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 text-xs font-medium text-rose-600 dark:text-rose-300 animate-fade-in">
               {error}
