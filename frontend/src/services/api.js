@@ -12,13 +12,25 @@ const getApiBaseUrl = () => {
   // 2. When accessed in browser
   if (typeof window !== 'undefined' && window.location?.hostname) {
     const hostname = window.location.hostname;
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+    const isLocalNetworkIp = /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname) || hostname.endsWith('.local');
+
     // In Vite dev server (port 5173), use relative '/api' which Vite proxies to backend port 8000
     if (window.location.port === '5173') {
       return '/api';
     }
-    // If on another device on the local network (e.g. mobile phone on Wi-Fi) outside dev proxy
-    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+
+    // If accessed via local Wi-Fi IP directly on port 8000 (e.g. mobile phone on Wi-Fi)
+    if (isLocalNetworkIp) {
       return `http://${hostname}:8000/api`;
+    }
+
+    // If running on a cloud domain (like Vercel)
+    if (!isLocalhost && !isLocalNetworkIp) {
+      if (envUrl) {
+        return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
+      }
+      return '/api';
     }
   }
 
@@ -58,11 +70,19 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    const message =
+    let message =
       error.response?.data?.message ||
       error.response?.data?.detail ||
       error.message ||
       'An unexpected error occurred. Please try again.';
+
+    if (error.message === 'Network Error' || (!error.response && error.code === 'ERR_NETWORK')) {
+      if (typeof window !== 'undefined' && window.location?.hostname?.includes('vercel.app')) {
+        message = 'Backend is unreachable from Vercel. Please ensure your FastAPI backend is deployed (e.g. on Render) and VITE_API_URL is configured.';
+      } else {
+        message = 'Cannot connect to backend server. Make sure the backend is running (uvicorn app.main:app --host 0.0.0.0 --port 8000).';
+      }
+    }
 
     if (error.response?.status === 401) {
       // Clear token on authentication failure
