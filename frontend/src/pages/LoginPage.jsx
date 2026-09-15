@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, Sparkles, ArrowRight, PlayCircle, ShieldCheck } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Sparkles, ArrowRight, PlayCircle, ShieldCheck, Server, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Card from '../components/Card';
+import { setCustomBackendUrl, getCustomBackendUrl, getActiveBackendUrl } from '../services/api';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -15,12 +16,55 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Backend URL connection states
+  const [showServerConfig, setShowServerConfig] = useState(false);
+  const [backendInput, setBackendInput] = useState(() => getCustomBackendUrl() || '');
+  const [testingBackend, setTestingBackend] = useState(false);
+  const [backendTestMsg, setBackendTestMsg] = useState('');
+
   const { login, loginAsDemo } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
 
   const from = location.state?.from?.pathname || '/dashboard';
+
+  const handleConnectBackend = async () => {
+    if (!backendInput.trim()) {
+      setCustomBackendUrl('');
+      setBackendTestMsg('Reset to default backend.');
+      setError('');
+      return;
+    }
+
+    setTestingBackend(true);
+    setBackendTestMsg('');
+
+    let testUrl = backendInput.trim().replace(/\/+$/, '');
+    if (!testUrl.startsWith('http://') && !testUrl.startsWith('https://')) {
+      testUrl = 'https://' + testUrl;
+      setBackendInput(testUrl);
+    }
+    const healthUrl = testUrl.endsWith('/api') ? `${testUrl}/health` : `${testUrl}/api/health`;
+
+    try {
+      const response = await fetch(healthUrl, { method: 'GET', mode: 'cors' });
+      setCustomBackendUrl(testUrl);
+      if (response.ok) {
+        setBackendTestMsg('Connected to backend successfully!');
+        addToast('Connected to backend server!', 'success');
+      } else {
+        setBackendTestMsg(`Connected (Status ${response.status}). URL saved.`);
+      }
+      setError('');
+    } catch {
+      setCustomBackendUrl(testUrl);
+      setBackendTestMsg('Backend URL saved! You can now sign in.');
+      setError('');
+    } finally {
+      setTestingBackend(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,8 +128,60 @@ const LoginPage = () => {
         {/* Login Card */}
         <Card className="p-6 sm:p-8 space-y-6 shadow-2xl dark:shadow-[0_20px_60px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)]" glass>
           {error && (
-            <div className="p-3.5 rounded-xl bg-rose-50/80 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 text-xs font-mono font-medium text-rose-600 dark:text-rose-300 animate-fade-in">
-              {error}
+            <div className="p-3.5 rounded-xl bg-rose-50/80 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 text-xs font-mono font-medium text-rose-600 dark:text-rose-300 animate-fade-in space-y-2">
+              <div>{error}</div>
+              {(error.includes('404') || error.includes('Backend') || error.includes('connect')) && (
+                <button
+                  type="button"
+                  onClick={() => setShowServerConfig(!showServerConfig)}
+                  className="inline-flex items-center gap-1.5 text-[11px] font-sans font-semibold text-primary-600 dark:text-primary-400 hover:underline pt-1"
+                >
+                  <Server className="w-3.5 h-3.5" />
+                  {showServerConfig ? 'Hide Backend Settings' : 'Connect Backend Server URL (Render)'}
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Backend URL Config Drawer */}
+          {showServerConfig && (
+            <div className="p-4 rounded-xl bg-slate-900/95 text-white border border-primary-500/40 text-xs space-y-3 animate-fade-in shadow-xl">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 font-semibold text-slate-100">
+                  <Server className="w-4 h-4 text-primary-400" />
+                  <span>Connect Backend URL</span>
+                </div>
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-primary-500/20 text-primary-300 border border-primary-500/30">
+                  Render / Cloud
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-300 leading-relaxed font-sans">
+                Paste your Render backend Web Service URL (e.g. from your Render dashboard: <span className="font-mono text-primary-300">https://learnai-backend-xxxx.onrender.com</span>):
+              </p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={backendInput}
+                  onChange={(e) => setBackendInput(e.target.value)}
+                  placeholder="https://your-backend.onrender.com"
+                  className="flex-1 px-3 py-1.5 text-xs bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-primary-500 font-mono"
+                />
+                <Button
+                  size="sm"
+                  variant="primary"
+                  isLoading={testingBackend}
+                  onClick={handleConnectBackend}
+                  className="text-xs px-3 py-1.5 whitespace-nowrap"
+                >
+                  Save & Connect
+                </Button>
+              </div>
+              {backendTestMsg && (
+                <p className="text-[11px] font-mono flex items-center gap-1.5 text-emerald-400">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  {backendTestMsg}
+                </p>
+              )}
             </div>
           )}
 
@@ -205,8 +301,20 @@ const LoginPage = () => {
           </button>
         </Card>
 
+        {/* Configure Server Link */}
+        <div className="text-center mt-3">
+          <button
+            type="button"
+            onClick={() => setShowServerConfig(!showServerConfig)}
+            className="text-[11px] text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 inline-flex items-center gap-1.5 transition-colors font-mono"
+          >
+            <Server className="w-3 h-3" />
+            {showServerConfig ? 'Close Backend Settings' : 'Configure Backend Server'}
+          </button>
+        </div>
+
         {/* Footer Link */}
-        <p className="text-center text-xs text-slate-500 dark:text-slate-400 mt-6">
+        <p className="text-center text-xs text-slate-500 dark:text-slate-400 mt-4">
           Don't have an account?{' '}
           <Link to="/signup" className="text-primary-600 dark:text-primary-400 font-semibold hover:underline">
             Create Account
