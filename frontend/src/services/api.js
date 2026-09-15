@@ -1,7 +1,32 @@
 import axios from 'axios';
 
-let rawBaseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:8000/api').trim().replace(/\/+$/, '');
-const API_BASE_URL = rawBaseUrl.endsWith('/api') ? rawBaseUrl : `${rawBaseUrl}/api`;
+// Resolve API base URL dynamically for multi-device access and proxying
+const getApiBaseUrl = () => {
+  const envUrl = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+
+  // 1. If explicit cloud URL is provided (e.g. Render / production backend), use it
+  if (envUrl && !envUrl.includes('localhost') && !envUrl.includes('127.0.0.1')) {
+    return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
+  }
+
+  // 2. When accessed in browser
+  if (typeof window !== 'undefined' && window.location?.hostname) {
+    const hostname = window.location.hostname;
+    // In Vite dev server (port 5173), use relative '/api' which Vite proxies to backend port 8000
+    if (window.location.port === '5173') {
+      return '/api';
+    }
+    // If on another device on the local network (e.g. mobile phone on Wi-Fi) outside dev proxy
+    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+      return `http://${hostname}:8000/api`;
+    }
+  }
+
+  const base = envUrl || 'http://localhost:8000/api';
+  return base.endsWith('/api') ? base : `${base}/api`;
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 const api = axios.create({
   baseURL: API_BASE_URL,
